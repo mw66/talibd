@@ -33,4 +33,16 @@ https://github.com/mingwugmail/talibd/blob/master/source/app.d
 just type `make` to run it:
 ```
 $ make
+...
+
+$ ./talibd
+Run some tests
+prices.length=755
+test TA_MA
+prices[$-1]=334.06 sma10[9]=236.502 sma10[$-1]=343.91 sma20[$-1]=342.521
+test TA_RSI
+prices[$-1]=334.06 rsi14[14]=80.4548 rsi14[$-1]=45.0602
+test TA_MACD
+prices[$-1]=334.06 macd[$-1]=1.86243 macdSignal[$-1]=4.30537 macdHist[$-1]=-2.44294
+
 ```
