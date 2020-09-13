@@ -13,3 +13,4 @@ talibd-test-*
 *.o
 *.obj
 *.lst
+lib/ta-lib-code/
