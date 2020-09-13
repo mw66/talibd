@@ -52,7 +52,7 @@ bool TA_MA(double[] inData , double[] outMA , int MA_optInTimePeriod=default_MA_
  
  int begin, num; 
  int lookback = TA_MA_Lookback(MA_optInTimePeriod,optInMAType,); 
- Assert.equal(MA_optInTimePeriod, lookback); 
+ Assert.equal((MA_optInTimePeriod-1), lookback); 
  if (lookback > inData.length) { 
  return false; 
  } 

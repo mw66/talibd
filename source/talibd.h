@@ -138,7 +138,10 @@ bool TA_FUNC(double[] inData FOR_EACH(DECL_ARRAY_TYPE, FUNC_OUTS) FOR_EACH(SPLIT
 #define MA_OUTS outMA
 immutable int default_MA_optInTimePeriod = 20;
 immutable TA_MAType default_optInMAType = TA_MAType_SMA;
-DECL_TA_FUNC(TA_MA, MA_INS, MA_OUTS, MA_optInTimePeriod)
+// https://www.ta-lib.org/d_api/d_api.html#Output%20Size
+// The lookback function indicates how many inputs are consume before the first output can be calculated.
+// Example: A simple moving average (SMA) of period 10 will have a lookback of 9.
+DECL_TA_FUNC(TA_MA, MA_INS, MA_OUTS, (MA_optInTimePeriod-1))
 
 
 
