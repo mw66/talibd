@@ -1,0 +1,13 @@
+{
+	"authors": [
+		"mw"
+	],
+	"copyright": "Copyright © 2020, mw",
+	"dependencies": {
+		"fluent-asserts": "~>0.13.3",
+		"jdiutil": "~>1.0.8"
+	},
+	"description": "D wrapper for https://ta-lib.org/",
+	"license": "Boost",
+	"name": "talibd"
+}
