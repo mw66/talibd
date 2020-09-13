@@ -22,7 +22,7 @@ void main() {
 
   Assert.equal(prices.length, 755);
 
-  // test TA_MA
+  writeln("test TA_MA");
   double[] sma10 = new double[prices.length];
   double[] sma20 = new double[prices.length];
   assert(isNaN(sma10[  0]));
@@ -42,4 +42,11 @@ void main() {
   assert(approxEqual( sma10[  9], 236.50, maxRelDiff));  // 1st non-zero value!
   assert(approxEqual( sma10[$-1], 343.91, maxRelDiff));
 
+  writeln("test TA_RSI");
+  double[] rsi14 = new double[prices.length];
+  TA_RSI(prices, rsi14);
+  writeln(mixin(_S!"{prices[$-1]; rsi14[14]; rsi14[$-1]}"));
+  assert(approxEqual(rsi14[ 13],       0, maxRelDiff));
+  assert(approxEqual(rsi14[ 14], 80.4548, maxRelDiff));  // 1st non-zero value!
+  assert(approxEqual(rsi14[$-1],   45.06, maxRelDiff));
 }
