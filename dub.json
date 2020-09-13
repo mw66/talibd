@@ -8,6 +8,9 @@
 		"jdiutil": "~>1.0.8"
 	},
 	"description": "D wrapper for https://ta-lib.org/",
+	"lflags": [
+		"-L./lib/ta-lib-code/ta-lib/c/lib", "-lta_libc_cmd"
+	],
 	"license": "Boost",
 	"name": "talibd"
 }
