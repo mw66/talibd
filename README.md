@@ -29,3 +29,8 @@ https://github.com/atilaneves/dpp/issues/272
 # Demo:
 
 https://github.com/mingwugmail/talibd/blob/master/source/app.d
+
+just type `make` to run it:
+```
+$ make
+```
