@@ -24,4 +24,4 @@ https://github.com/atilaneves/dpp/issues/272
 # Design:
 
 * the output and the input data are of the same length, and are *end-aligned*!
-* the output is front-padded with 0 instead of NaN, i.e the [lookback area](// https://www.ta-lib.org/d_api/d_api.html#Output%20Size)
+* the output is front-padded with 0 instead of NaN, i.e the [lookback area](https://www.ta-lib.org/d_api/d_api.html#Output%20Size)
