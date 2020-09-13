@@ -165,4 +165,4 @@ DECL_TA_FUNC(TA_RSI, RSI_INS, RSI_OUTS, RSI_optInTimePeriod)
 immutable int default_optInFastPeriod = 12;
 immutable int default_optInSlowPeriod = 26;
 immutable int default_optInSignalPeriod = 9;
-DECL_TA_FUNC(TA_MACD, MACD_INS, MACD_OUTS, optInSlowPeriod)
+DECL_TA_FUNC(TA_MACD, MACD_INS, MACD_OUTS, (optInSlowPeriod+optInSignalPeriod-2))

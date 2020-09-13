@@ -107,7 +107,7 @@ bool TA_MACD(double[] inData , double[] outMACD, double[] outMACDSignal, double[
  
  int begin, num; 
  int lookback = TA_MACD_Lookback(optInFastPeriod,optInSlowPeriod,optInSignalPeriod,); 
- Assert.equal(optInSlowPeriod, lookback); 
+ Assert.equal((optInSlowPeriod+optInSignalPeriod-2), lookback); 
  if (lookback > inData.length) { 
  return false; 
  } 
