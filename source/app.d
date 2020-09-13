@@ -49,4 +49,14 @@ void main() {
   assert(approxEqual(rsi14[ 13],       0, maxRelDiff));
   assert(approxEqual(rsi14[ 14], 80.4548, maxRelDiff));  // 1st non-zero value!
   assert(approxEqual(rsi14[$-1],   45.06, maxRelDiff));
+
+  writeln("test TA_MACD");
+  double[] macd       = new double[prices.length];
+  double[] macdSignal = new double[prices.length];
+  double[] macdHist   = new double[prices.length];
+  TA_MACD(prices, macd, macdSignal, macdHist);
+  writeln(mixin(_S!"{prices[$-1]; macd[$-1]; macdSignal[$-1]; macdHist[$-1]}"));
+  assert(approxEqual(macd      [$-1],  1.86243, maxRelDiff));
+  assert(approxEqual(macdSignal[$-1],  4.30537, maxRelDiff));
+  assert(approxEqual(macdHist  [$-1], -2.44294, maxRelDiff));
 }
