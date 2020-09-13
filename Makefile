@@ -1,7 +1,7 @@
 
 all:
 	make -B source/talibd.d
-	dub build
+	dub build -q
 	./talibd
 
 DPP=~/.dub/packages/dpp-0.4.2/dpp/bin/d++
