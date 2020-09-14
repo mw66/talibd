@@ -1,8 +1,10 @@
+module talibd.talib_func;
+
 import std.math;
 
 import fluent.asserts;
 
-import talib;
+import talibd.talib;
 
 
 #define HEAD(x, ...) x
@@ -124,7 +126,7 @@ bool TA_FUNC(double[] inData FOR_EACH(DECL_ARRAY_TYPE, FUNC_OUTS) FOR_EACH(SPLIT
     return false; __NL__\
   } __NL__\
   FOR_EACH(INIT_OUTPUT, FUNC_OUTS) __NL__\
-  auto r = talib.TA_FUNC(0, cast(int)(inData.length-1), inData.ptr, FOR_EACH(SPLIT_THEN_TAKE_VAR, FUNC_INS) &begin, &num OUT_PARAMS(FUNC_OUTS)); __NL__\
+  auto r = talibd.talib.TA_FUNC(0, cast(int)(inData.length-1), inData.ptr, FOR_EACH(SPLIT_THEN_TAKE_VAR, FUNC_INS) &begin, &num OUT_PARAMS(FUNC_OUTS)); __NL__\
  __NL__\
   Assert.equal(lookback, begin);  /* RSI's start 0-data need to compare with prev close, so this assert holds; in contrast for TA_MA */ __NL__\
   Assert.equal(begin + num, cast(int)(inData.length)); __NL__\
@@ -147,7 +149,7 @@ DECL_TA_FUNC(TA_MA, MA_INS, MA_OUTS, (MA_optInTimePeriod-1))
 
 /+ manual wrapper
 bool TA_RSI(double[] inData, double[] outRSI, int period=default_RSI_optInTimePeriod) {
-  auto r = talib.TA_RSI(0, cast(int)(inData.length-1), inData.ptr, period, &begin, &num, &(outRSI[lookback]));
+  auto r = talibd.talib.TA_RSI(0, cast(int)(inData.length-1), inData.ptr, period, &begin, &num, &(outRSI[lookback]));
 }
 +/
 

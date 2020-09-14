@@ -1,3 +1,4 @@
+module talibd.talib;
 
 public import core.stdc.stdio;
 

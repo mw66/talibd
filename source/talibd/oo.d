@@ -1,5 +1,7 @@
-import talib;
-import talibd;
+module talibd.oo;
+
+import talibd.talib;
+import talibd.talib_func;
 
 // oo wrapper
 

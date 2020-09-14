@@ -35,7 +35,7 @@ just type `make` to run it:
 $ make
 ...
 
-$ ./talibd
+
 Run some tests
 prices.length=755
 test TA_MA

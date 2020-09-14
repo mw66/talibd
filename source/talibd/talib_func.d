@@ -1,6 +1,7 @@
+module talibd.talib_func;
 import std.math;
 import fluent.asserts;
-import talib;
+import talibd.talib;
 /+
 TA_RetCode TA_RSI( int startIdx,
                    int endIdx,
@@ -58,7 +59,7 @@ bool TA_MA(double[] inData , double[] outMA , int MA_optInTimePeriod=default_MA_
  } 
  outMA[0..lookback] = 0;
  
- auto r = talib.TA_MA(0, cast(int)(inData.length-1), inData.ptr, MA_optInTimePeriod,optInMAType, &begin, &num ,
+ auto r = talibd.talib.TA_MA(0, cast(int)(inData.length-1), inData.ptr, MA_optInTimePeriod,optInMAType, &begin, &num ,
  &(outMA[lookback])); 
  
  Assert.equal(lookback, begin); 
@@ -70,7 +71,7 @@ bool TA_MA(double[] inData , double[] outMA , int MA_optInTimePeriod=default_MA_
 
 /+ manual wrapper
 bool TA_RSI(double[] inData, double[] outRSI, int period=default_RSI_optInTimePeriod) {
-  auto r = talib.TA_RSI(0, cast(int)(inData.length-1), inData.ptr, period, &begin, &num, &(outRSI[lookback]));
+  auto r = talibd.talib.TA_RSI(0, cast(int)(inData.length-1), inData.ptr, period, &begin, &num, &(outRSI[lookback]));
 }
 +/
 immutable int default_RSI_optInTimePeriod = 14;
@@ -86,7 +87,7 @@ bool TA_RSI(double[] inData , double[] outRSI , int RSI_optInTimePeriod=default_
  } 
  outRSI[0..lookback] = 0;
  
- auto r = talib.TA_RSI(0, cast(int)(inData.length-1), inData.ptr, RSI_optInTimePeriod, &begin, &num ,
+ auto r = talibd.talib.TA_RSI(0, cast(int)(inData.length-1), inData.ptr, RSI_optInTimePeriod, &begin, &num ,
  &(outRSI[lookback])); 
  
  Assert.equal(lookback, begin); 
@@ -115,7 +116,7 @@ bool TA_MACD(double[] inData , double[] outMACD, double[] outMACDSignal, double[
  outMACDSignal[0..lookback] = 0;
  outMACDHist[0..lookback] = 0;
  
- auto r = talib.TA_MACD(0, cast(int)(inData.length-1), inData.ptr, optInFastPeriod,optInSlowPeriod,optInSignalPeriod, &begin, &num ,
+ auto r = talibd.talib.TA_MACD(0, cast(int)(inData.length-1), inData.ptr, optInFastPeriod,optInSlowPeriod,optInSignalPeriod, &begin, &num ,
  &(outMACD[lookback]),
  &(outMACDSignal[lookback]),
  &(outMACDHist[lookback])); 

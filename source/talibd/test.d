@@ -1,3 +1,5 @@
+module talibd.test;
+
 import std.algorithm;
 import std.csv;
 import std.experimental.logger;
@@ -7,10 +9,15 @@ import std.typecons;
 
 import fluent.asserts;
 public import jdiutil;
-import talibd;
+
+public import talibd.talib;       // raw D interface of C
+public import talibd.talib_func;  // simplified D func
+public import talibd.oo;          // D wrapper
 
 
 alias logger = std.experimental.logger;
+
+unittest {
 
 void main() {
   writeln("read test data");
@@ -113,4 +120,8 @@ void main() {
   assert(approxEqual(ema13[ 12], 236.762, maxRelDiff));  // 1st non-zero value!
   assert(approxEqual(ema13[$-1], 340.794, maxRelDiff));
   }
+}
+
+main();
+
 }
