@@ -17,7 +17,7 @@ $ cd lib && make
 ```
 
 ## DPP
-NOTE: source/talibd.d has been manually modified due to: 
+NOTE: source/talib.d has been manually modified due to: 
 https://github.com/atilaneves/dpp/issues/272
 
 
