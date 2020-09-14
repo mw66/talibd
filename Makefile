@@ -1,7 +1,9 @@
 
+DUB=/usr/bin/dub
+
 all:
 	make -B source/talib_func.d
-	dub build -q
+	$(DUB) build -q
 	./talibd
 
 DPP=~/.dub/packages/dpp-0.4.2/dpp/bin/d++
@@ -13,4 +15,4 @@ source/talib_func.d: source/talib_func.h
 	cpp -P $< | sed 's/__NL__/\n/g' > $@
 
 clean:
-	dub clean
+	$(DUB) clean
