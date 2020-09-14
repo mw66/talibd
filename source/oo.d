@@ -27,9 +27,11 @@ class ExponentialMovingAverage : PriceViewer {
   }
 }
 
+alias EMA = ExponentialMovingAverage;
+
 
 // https://school.stockcharts.com/doku.php?id=technical_indicators:macd-histogram
-class MACD : PriceViewer {
+class MovingAverageConvergenceDivergence : PriceViewer {
   double[] macd;
   double[] macdSignal;
   double[] macdHist;
@@ -45,3 +47,5 @@ class MACD : PriceViewer {
     return TA_MACD(_prices, macd, macdSignal, macdHist);
   }
 }
+
+alias MACD = MovingAverageConvergenceDivergence;
