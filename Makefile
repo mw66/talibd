@@ -1,6 +1,6 @@
 
 all:
-	make -B source/talibd.d
+	make -B source/talib_func.d
 	dub build -q
 	./talibd
 
@@ -9,7 +9,7 @@ DPPFLAGS = --preprocess-only --hard-fail --include-path=/home/linuxbrew/.linuxbr
 talib:
 	$(DPP) $(DPPFLAGS) source/talib.dpp
 
-source/talibd.d: source/talibd.h
+source/talib_func.d: source/talib_func.h
 	cpp -P $< | sed 's/__NL__/\n/g' > $@
 
 clean:
