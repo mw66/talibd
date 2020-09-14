@@ -10,7 +10,7 @@ import talibd;
 
 
 void main() {
-  writeln("Run some tests");
+  writeln("read test data");
   string fn = "testdata/SPY.csv";
   auto file = File(fn, "r");
   auto r = file.byLine.joiner("\n");
@@ -22,6 +22,9 @@ void main() {
 
   Assert.equal(prices.length, 755);
 
+  double maxRelDiff = 1e-05;
+
+  {  // raw api test
   writeln("test TA_MA");
   double[] sma10 = new double[prices.length];
   double[] sma20 = new double[prices.length];
@@ -32,7 +35,6 @@ void main() {
   TA_MA(prices, sma10, 10);
   TA_MA(prices, sma20);
 
-  double maxRelDiff = 1e-05;
   writeln(mixin(_S!"{prices[$-1]; sma10[9]; sma10[$-1]; sma20[$-1]}"));
   assert(approxEqual(prices[$-1], 334.06, maxRelDiff));
   assert(approxEqual( sma20[$-1], 342.52, maxRelDiff));
@@ -59,4 +61,14 @@ void main() {
   assert(approxEqual(macd      [$-1],  1.86243, maxRelDiff));
   assert(approxEqual(macdSignal[$-1],  4.30537, maxRelDiff));
   assert(approxEqual(macdHist  [$-1], -2.44294, maxRelDiff));
+  }
+
+  {  // oo test
+  auto ema13 = new ExponentialMovingAverage(13, prices);
+  ema13.calc();
+  writeln(mixin(_S!"{prices[$-1]; ema13[11]; ema13[12]; ema13[$-1]}"));
+  assert(approxEqual(ema13[ 11],       0, maxRelDiff));
+  assert(approxEqual(ema13[ 12], 236.762, maxRelDiff));  // 1st non-zero value!
+  assert(approxEqual(ema13[$-1], 340.794, maxRelDiff));
+  }
 }
