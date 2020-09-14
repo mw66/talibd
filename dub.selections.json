@@ -3,7 +3,7 @@
 	"versions": {
 		"ddmp": "0.0.1-0.dev.3",
 		"fluent-asserts": "0.13.3",
-		"jdiutil": "1.0.8",
+		"jdiutil": "1.0.9",
 		"libdparse": "0.14.0",
 		"stdx-allocator": "2.77.5"
 	}
