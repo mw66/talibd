@@ -159,6 +159,7 @@ DECL_TA_FUNC(TA_RSI, RSI_INS, RSI_OUTS, RSI_optInTimePeriod)
 
 
 // https://school.stockcharts.com/doku.php?id=technical_indicators:moving_average_convergence_divergence_macd
+// https://school.stockcharts.com/doku.php?id=technical_indicators:macd-histogram
 // just define in & out variables
 #define MACD_INS  int optInFastPeriod, int optInSlowPeriod, int optInSignalPeriod
 #define MACD_OUTS outMACD, outMACDSignal, outMACDHist
