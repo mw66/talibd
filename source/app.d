@@ -1,5 +1,6 @@
 import std.algorithm;
 import std.csv;
+import std.experimental.logger;
 import std.math;
 import std.stdio;
 import std.typecons;
@@ -9,13 +10,15 @@ public import jdiutil;
 import talibd;
 
 
+alias logger = std.experimental.logger;
+
 void main() {
   writeln("read test data");
   string fn = "testdata/SPY.csv";
   auto file = File(fn, "r");
-  auto r = file.byLine.joiner("\n");
+  auto lines = file.byLine.joiner("\n");
   double[] prices;
-  foreach (record; csvReader!(Tuple!(string, double, double, double, double, double, double,))(r, null)) {
+  foreach (record; csvReader!(Tuple!(string, double, double, double, double, double, double,))(lines, null)) {
     prices ~= record[$-1];
   }
   writeln(mixin(_S!"{prices.length}"));
@@ -23,6 +26,47 @@ void main() {
   Assert.equal(prices.length, 755);
 
   double maxRelDiff = 1e-05;
+
+  {
+  logger.trace("test talib C interface");
+
+  int begin, num, end;
+  double[] dailyCloses = prices;
+  // The lookback function indicates how many inputs are consume before the first output can be calculated.
+  // Example: A simple moving average (SMA) of period 10 will have a lookback of 9.
+  int rsiLb = TA_RSI_Lookback(default_RSI_optInTimePeriod);
+  int maLb  = TA_MA_Lookback( default_RSI_optInTimePeriod, TA_MAType_SMA);
+  Assert.equal(default_RSI_optInTimePeriod, rsiLb);
+  Assert.equal(default_RSI_optInTimePeriod, maLb+1);
+
+  // call raw talib
+  double[] dailyRSI;
+  dailyRSI    = new double[dailyCloses.length];
+  auto r = TA_RSI(0, cast(int)(dailyCloses.length-1), dailyCloses.ptr, default_RSI_optInTimePeriod, &begin, &num,   dailyRSI.ptr);
+  // NOTE: talib output index starts from 0!
+  // https://ta-lib.org/d_api/d_api.html#Direct%20call%20to%20a%20TA%20Function
+  Assert.equal(default_RSI_optInTimePeriod, begin);  // RSI's start 0-data need to compare with prev close, so this assert holds; in contrast for TA_MA
+//Assert.equal(DEFAULT_MA_PERIOD,  begin+1);
+  logger.trace(mixin(_S!"{r; begin; num; dailyRSI[0]; dailyRSI[num-3]; dailyRSI[num-1]; dailyRSI[num]}"));
+
+  // end-index-aligned talib output
+  dailyRSI    = new double[dailyCloses.length];
+  dailyRSI[]  = 0;
+       r = TA_RSI(0, cast(int)(dailyCloses.length-1), dailyCloses.ptr, default_RSI_optInTimePeriod, &begin, &num, &(dailyRSI[default_RSI_optInTimePeriod]));
+  logger.trace(mixin(_S!"{r; begin; num; dailyRSI[0]; dailyRSI[default_RSI_optInTimePeriod-1]; dailyRSI[default_RSI_optInTimePeriod]; dailyRSI[$-3]; dailyRSI[$-1];}"));
+  assert( isZero(dailyRSI[0]));
+  assert( isZero(dailyRSI[default_RSI_optInTimePeriod-1]));
+  assert(!isZero(dailyRSI[default_RSI_optInTimePeriod]));
+  assert(!isZero(dailyRSI[$-1]));
+
+  // test talibd
+  bool ok = TA_RSI(dailyCloses, dailyRSI);
+  assert(ok);
+  assert( isZero(dailyRSI[0]));
+  assert( isZero(dailyRSI[default_RSI_optInTimePeriod-1]));
+  assert(!isZero(dailyRSI[default_RSI_optInTimePeriod]));
+  assert(!isZero(dailyRSI[$-1]));
+  }
 
   {  // raw api test
   writeln("test TA_MA");
