@@ -14,8 +14,9 @@ DPPFLAGS = --preprocess-only --hard-fail --include-path=/home/linuxbrew/.linuxbr
 talib:
 	$(DPP) $(DPPFLAGS) $(SRC)/talib.dpp
 
+NEW_LINE=______
 $(SRC)/talib_func.d: $(SRC)/talib_func.h
-	cpp -P $< | sed 's/__NL__/\n/g' > $@
+	cpp -P $< | sed 's/$(NEW_LINE)/\n/g' > $@
 
 clean:
 	$(DUB) clean

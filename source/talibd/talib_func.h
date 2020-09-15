@@ -6,6 +6,8 @@ import fluent.asserts;
 
 import talibd.talib;
 
+// NEW_LINE will be processed in the Makefile
+#define NEW_LINE ______
 
 #define HEAD(x, ...) x
 #define TAIL(x, ...) __VA_ARGS__
@@ -62,12 +64,12 @@ import talibd.talib;
 #define SPLIT_THEN_TAKE_VAR(X)     SPLIT(TAKE_VAR,   X),
 
 // end-index-aligned talib output
-#define TAKE_ITEM_ADDR(X) ,__NL__ &(X[lookback])
+#define TAKE_ITEM_ADDR(X) ,______ &(X[lookback])
 #define OUT_PARAMS(...) FOR_EACH(TAKE_ITEM_ADDR,__VA_ARGS__)
 
 
-#define  CHECK_OUTPUT_LENGTH(X) Assert.equal(inData.length, X.length);__NL__  /* same array length, end-aligned */
-#define  INIT_OUTPUT(X) X[0..lookback] = 0;__NL__ /* double.init;  // clear all the content? */
+#define  CHECK_OUTPUT_LENGTH(X) Assert.equal(inData.length, X.length);______  /* same array length, end-aligned */
+#define  INIT_OUTPUT(X) X[0..lookback] = 0;______ /* double.init;  // clear all the content? */
 
 /+
 TA_RetCode TA_RSI( int    startIdx,
@@ -116,23 +118,23 @@ TA_RetCode TA_MA( int    startIdx,
 
 +/
 
-#define DECL_TA_FUNC(TA_FUNC, FUNC_INS, FUNC_OUTS, expected_lookback) __NL__\
-bool TA_FUNC(double[] inData FOR_EACH(DECL_ARRAY_TYPE, FUNC_OUTS) FOR_EACH(SPLIT_THEN_DECL_PARAM, FUNC_INS)) { __NL__\
-  FOR_EACH(CHECK_OUTPUT_LENGTH, FUNC_OUTS) __NL__\
-  int begin, num; __NL__\
-  int lookback = TA_FUNC##_Lookback(FOR_EACH(SPLIT_THEN_TAKE_VAR, FUNC_INS)); __NL__\
-  Assert.equal(expected_lookback, lookback); __NL__\
-  if (lookback > inData.length) { __NL__\
-    return false; __NL__\
-  } __NL__\
-  FOR_EACH(INIT_OUTPUT, FUNC_OUTS) __NL__\
-  auto r = talibd.talib.TA_FUNC(0, cast(int)(inData.length-1), inData.ptr, FOR_EACH(SPLIT_THEN_TAKE_VAR, FUNC_INS) &begin, &num OUT_PARAMS(FUNC_OUTS)); __NL__\
- __NL__\
-  Assert.equal(lookback, begin);  /* RSI's start 0-data need to compare with prev close, so this assert holds; in contrast for TA_MA */ __NL__\
-  Assert.equal(begin + num, cast(int)(inData.length)); __NL__\
- __NL__\
-  return TA_SUCCESS == r; __NL__\
-} __NL__ __NL__
+#define DECL_TA_FUNC(TA_FUNC, FUNC_INS, FUNC_OUTS, expected_lookback) ______\
+bool TA_FUNC(double[] inData FOR_EACH(DECL_ARRAY_TYPE, FUNC_OUTS) FOR_EACH(SPLIT_THEN_DECL_PARAM, FUNC_INS)) { ______\
+  FOR_EACH(CHECK_OUTPUT_LENGTH, FUNC_OUTS) ______\
+  int begin, num; ______\
+  int lookback = TA_FUNC##_Lookback(FOR_EACH(SPLIT_THEN_TAKE_VAR, FUNC_INS)); ______\
+  Assert.equal(expected_lookback, lookback); ______\
+  if (lookback > inData.length) { ______\
+    return false; ______\
+  } ______\
+  FOR_EACH(INIT_OUTPUT, FUNC_OUTS) ______\
+  auto r = talibd.talib.TA_FUNC(0, cast(int)(inData.length-1), inData.ptr, FOR_EACH(SPLIT_THEN_TAKE_VAR, FUNC_INS) &begin, &num OUT_PARAMS(FUNC_OUTS)); ______\
+ ______\
+  Assert.equal(lookback, begin);  /* RSI's start 0-data need to compare with prev close, so this assert holds; in contrast for TA_MA */ ______\
+  Assert.equal(begin + num, cast(int)(inData.length)); ______\
+ ______\
+  return TA_SUCCESS == r; ______\
+} ______ ______
 
 
 // just define in & out variables
