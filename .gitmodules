@@ -1,0 +1,3 @@
+[submodule "lib/ta-lib-rt"]
+	path = lib/ta-lib-rt
+	url = https://github.com/trufanov-nok/ta-lib-rt
