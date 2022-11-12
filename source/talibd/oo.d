@@ -51,3 +51,11 @@ class MovingAverageConvergenceDivergence : PriceViewer {
 }
 
 alias MACD = MovingAverageConvergenceDivergence;
+
+class RSI : PriceViewer {
+  double[] rsi;
+  public this(double[] prices) {
+    _prices = prices;
+    rsi     = new double[_prices.length];  // NOTE: keep all TA array the same length as the price array
+  }
+}

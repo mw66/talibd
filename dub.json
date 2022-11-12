@@ -9,7 +9,7 @@
 	},
 	"description": "D wrapper for https://ta-lib.org/",
 	"lflags": [
-		"-L./lib/ta-lib-code/ta-lib/c/lib", "-lta_libc_cmd"
+		"-L./lib/ta-lib-rt/ta-lib-rt/build/lib", "-l:libta-lib-rt.a"
 	],
 	"license": "Boost",
 	"name": "talibd"

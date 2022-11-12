@@ -102,7 +102,9 @@ void main() {
   assert(approxEqual(rsi14[ 13],       0, maxRelDiff));
   assert(approxEqual(rsi14[ 14], 80.4548, maxRelDiff));  // 1st non-zero value!
   assert(approxEqual(rsi14[$-1],   45.06, maxRelDiff));
+  }
 
+  {  // oo test
   writeln("test TA_MACD");
   auto macd = new MACD(prices);
   macd.calc();
