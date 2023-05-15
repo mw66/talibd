@@ -13,6 +13,8 @@ http://prdownloads.sourceforge.net/ta-lib/ta-lib-0.4.0-src.tar.gz
 * build talib Linux Static Libraries
 * please check https://github.com/mingwugmail/talibd/blob/master/lib/Makefile
 ```
+$ git submodule update --init --recursive
+
 $ cd lib && make
 ```
 
