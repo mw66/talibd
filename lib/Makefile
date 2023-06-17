@@ -9,6 +9,12 @@
 # build the cmd version: use ta_libc_cmd.lib
 # ignore build error: undefined reference to `TA_IMI'
 
+# UPDATE(2023): use ta-lib-rt instead
+# ta-lib-rt/ta-lib-rt/build/lib/libta-lib-rt.a
+
+lib-rt:
+	cd ta-lib-rt && bash ./build.sh
+
 lib:
 	tar xzf ta-lib-code.tgz
 	cd ta-lib-code/ta-lib/c/make/cmd/linux/g++ && make clean && make
