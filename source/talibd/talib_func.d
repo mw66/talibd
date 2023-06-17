@@ -54,7 +54,7 @@ bool TA_MA(double[] inData , double[] outMA , int MA_optInTimePeriod=default_MA_
  int begin, num; 
  int lookback = TA_MA_Lookback(MA_optInTimePeriod,optInMAType,); 
  enforce((MA_optInTimePeriod-1) == lookback); 
- if (lookback > inData.length) { 
+ if (lookback >= inData.length) { 
  return false; 
  } 
  outMA[0..lookback] = 0;
@@ -82,7 +82,7 @@ bool TA_RSI(double[] inData , double[] outRSI , int RSI_optInTimePeriod=default_
  int begin, num; 
  int lookback = TA_RSI_Lookback(RSI_optInTimePeriod,); 
  enforce(RSI_optInTimePeriod == lookback); 
- if (lookback > inData.length) { 
+ if (lookback >= inData.length) { 
  return false; 
  } 
  outRSI[0..lookback] = 0;
@@ -109,7 +109,7 @@ bool TA_MACD(double[] inData , double[] outMACD, double[] outMACDSignal, double[
  int begin, num; 
  int lookback = TA_MACD_Lookback(optInFastPeriod,optInSlowPeriod,optInSignalPeriod,); 
  enforce((optInSlowPeriod+optInSignalPeriod-2) == lookback); 
- if (lookback > inData.length) { 
+ if (lookback >= inData.length) { 
  return false; 
  } 
  outMACD[0..lookback] = 0;

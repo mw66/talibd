@@ -123,7 +123,7 @@ bool TA_FUNC(double[] inData FOR_EACH(DECL_ARRAY_TYPE, FUNC_OUTS) FOR_EACH(SPLIT
   int begin, num; ______\
   int lookback = TA_FUNC##_Lookback(FOR_EACH(SPLIT_THEN_TAKE_VAR, FUNC_INS)); ______\
   enforce(expected_lookback == lookback); ______\
-  if (lookback > inData.length) { ______\
+  if (lookback >= inData.length) {  /* the first output will be writen to outReal[lookback] */  ______\
     return false; ______\
   } ______\
   FOR_EACH(INIT_OUTPUT, FUNC_OUTS) ______\

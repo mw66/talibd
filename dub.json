@@ -1,11 +1,11 @@
 {
 	"authors": [
-		"mw"
+		"mw66"
 	],
-	"copyright": "Copyright © 2020, mw",
+	"copyright": "Copyright © 2020, mw66",
 	"dependencies": {
-		"fluent-asserts": "~>0.13.3",
-		"jdiutil": "~>1.1.0"
+		"fluent-asserts": "*",
+		"jdiutil": "*"
 	},
 	"description": "D wrapper for https://ta-lib.org/",
 	"lflags": [
