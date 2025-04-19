@@ -5,6 +5,7 @@ SRC=source/talibd
 
 
 all:
+	python3 source/gen_talib_cdl_funcs.py > $(SRC)/cdl_funcs.h
 	make -B $(SRC)/talib_func.d
 	$(DUB) test --build=unittest
 
@@ -16,7 +17,7 @@ talib:
 
 NEW_LINE=______
 $(SRC)/talib_func.d: $(SRC)/talib_func.h
-	cpp -std=c2x -P $< | sed 's/$(NEW_LINE)/\n/g' > $@
+	gcc -std=c2x -E -P $< | sed 's/$(NEW_LINE)/\n/g' > $@
 
 clean:
 	$(DUB) clean
