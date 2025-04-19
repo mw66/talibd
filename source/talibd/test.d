@@ -87,38 +87,38 @@ void main() {
   TA_MA(prices, sma20);
 
   writeln(mixin(_S!"{prices[$-1]; sma10[9]; sma10[$-1]; sma20[$-1]}"));
-  assert(approxEqual(prices[$-1], 334.06, maxRelDiff));
-  assert(approxEqual( sma20[$-1], 342.52, maxRelDiff));
+  assert(isClose(prices[$-1], 334.06, maxRelDiff));
+  assert(isClose( sma20[$-1], 342.52, maxRelDiff));
 
-  assert(approxEqual( sma10[  0],      0, maxRelDiff));
-  assert(approxEqual( sma10[  8],      0, maxRelDiff));
-  assert(approxEqual( sma10[  9], 236.50, maxRelDiff));  // 1st non-zero value!
-  assert(approxEqual( sma10[$-1], 343.91, maxRelDiff));
+  assert(isClose( sma10[  0],      0, maxRelDiff));
+  assert(isClose( sma10[  8],      0, maxRelDiff));
+  assert(isClose( sma10[  9], 236.50, maxRelDiff));  // 1st non-zero value!
+  assert(isClose( sma10[$-1], 343.91, maxRelDiff));
 
   writeln("test TA_RSI");
   double[] rsi14 = new double[prices.length];
   TA_RSI(prices, rsi14);
   writeln(mixin(_S!"{prices[$-1]; rsi14[14]; rsi14[$-1]}"));
-  assert(approxEqual(rsi14[ 13],       0, maxRelDiff));
-  assert(approxEqual(rsi14[ 14], 80.4548, maxRelDiff));  // 1st non-zero value!
-  assert(approxEqual(rsi14[$-1],   45.06, maxRelDiff));
+  assert(isClose(rsi14[ 13],       0, maxRelDiff));
+  assert(isClose(rsi14[ 14], 80.4548, maxRelDiff));  // 1st non-zero value!
+  assert(isClose(rsi14[$-1],   45.06, maxRelDiff));
 
   writeln("test TA_MACD");
   auto macd = new MACD(prices);
   macd.calc();
   writeln(mixin(_S!"{prices[$-1]; macd.macd[$-1]; macd.macdSignal[$-1]; macd.macdHist[$-1]}"));
-  assert(approxEqual(macd.macd      [$-1],  1.86243, maxRelDiff));
-  assert(approxEqual(macd.macdSignal[$-1],  4.30537, maxRelDiff));
-  assert(approxEqual(macd.macdHist  [$-1], -2.44294, maxRelDiff));
+  assert(isClose(macd.macd      [$-1],  1.86243, maxRelDiff));
+  assert(isClose(macd.macdSignal[$-1],  4.30537, maxRelDiff));
+  assert(isClose(macd.macdHist  [$-1], -2.44294, maxRelDiff));
   }
 
   {  // oo test
   auto ema13 = new ExponentialMovingAverage(13, prices);
   ema13.calc();
   writeln(mixin(_S!"{prices[$-1]; ema13[11]; ema13[12]; ema13[$-1]}"));
-  assert(approxEqual(ema13[ 11],       0, maxRelDiff));
-  assert(approxEqual(ema13[ 12], 236.762, maxRelDiff));  // 1st non-zero value!
-  assert(approxEqual(ema13[$-1], 340.794, maxRelDiff));
+  assert(isClose(ema13[ 11],       0, maxRelDiff));
+  assert(isClose(ema13[ 12], 236.762, maxRelDiff));  // 1st non-zero value!
+  assert(isClose(ema13[$-1], 340.794, maxRelDiff));
   }
 }
 
