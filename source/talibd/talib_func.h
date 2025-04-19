@@ -1,5 +1,6 @@
 module talibd.talib_func;
 
+import std.exception;
 import std.math;
 
 import fluent.asserts;
@@ -44,9 +45,10 @@ import talibd.talib;
 #define FE_5(WHAT, X, ...) WHAT(X)FE_4(WHAT, __VA_ARGS__)
 //... repeat as needed
 
+// NOTE: __VA_OPT__ is c++20 feature to skip `action` on empty arguments: ref:NO_HLC_INS
 #define GET_MACRO(_0,_1,_2,_3,_4,_5,NAME,...) NAME
 #define FOR_EACH(action,...) \
-  GET_MACRO(_0,__VA_ARGS__,FE_5,FE_4,FE_3,FE_2,FE_1,FE_0)(action,__VA_ARGS__)
+  __VA_OPT__(GET_MACRO(_0,__VA_ARGS__,FE_5,FE_4,FE_3,FE_2,FE_1,FE_0)(action,__VA_ARGS__))
 
 
 // to generate D code!
@@ -55,11 +57,15 @@ import talibd.talib;
 #define IN_PARAMS(...) FOR_EACH(AS_IT_IS,__VA_ARGS__)
 
 
-#define DECL_ARRAY_TYPE(X) , double[] X
+// type: double, or int
+#define DECL_ARRAY_TYPE_double(X) , double[] X
+#define DECL_ARRAY_TYPE_int(X) ,       int[] X
 
+#define CAST_CONST_DOUBLE_PTR(x) x // cast(const(double)*)(x)
 // e.g. #define MA_INS  int optInTimePeriod, TA_MAType optInMAType
 #define DECL_PARAM(type, var) type var=default_ ## var
 #define   TAKE_VAR(type, var)      var
+#define          ADD_PTR(var)      CAST_CONST_DOUBLE_PTR(var.ptr),
 #define SPLIT_THEN_DECL_PARAM(X) , SPLIT(DECL_PARAM, X)
 #define SPLIT_THEN_TAKE_VAR(X)     SPLIT(TAKE_VAR,   X),
 
@@ -68,7 +74,7 @@ import talibd.talib;
 #define OUT_PARAMS(...) FOR_EACH(TAKE_ITEM_ADDR,__VA_ARGS__)
 
 
-#define  CHECK_OUTPUT_LENGTH(X) Assert.equal(inData.length, X.length);______  /* same array length, end-aligned */
+#define  CHECK_OUTPUT_LENGTH(X) enforce(inData.length == X.length);______  /* same array length, end-aligned */
 #define  INIT_OUTPUT(X) X[0..lookback] = 0;______ /* double.init;  // clear all the content? */
 
 /+
@@ -116,22 +122,62 @@ TA_RetCode TA_MA( int    startIdx,
                   int          *outNBElement,
                   double        outReal[] );
 
+
+// lib/ta-lib-code/ta-lib/c/include/ta_func.h
+// lib/ta-lib-code/ta-lib/c/src/ta_func/ta_CDLPIERCING.c
+TA_LIB_API TA_RetCode TA_CDLPIERCING( int    startIdx,
+                                      int    endIdx,
+                                                 const double inOpen[],
+                                                 const double inHigh[],
+                                                 const double inLow[],
+                                                 const double inClose[],
+                                                 int          *outBegIdx,
+                                                 int          *outNBElement,
+                                                 int           outInteger[] );
+   lookbackTotal = LOOKBACK_CALL(CDLPIERCING)();
 +/
 
-#define DECL_TA_FUNC(TA_FUNC, FUNC_INS, FUNC_OUTS, expected_lookback) ______\
-bool TA_FUNC(double[] inData FOR_EACH(DECL_ARRAY_TYPE, FUNC_OUTS) FOR_EACH(SPLIT_THEN_DECL_PARAM, FUNC_INS)) { ______\
-  FOR_EACH(CHECK_OUTPUT_LENGTH, FUNC_OUTS) ______\
-  int begin, num; ______\
-  int lookback = TA_FUNC##_Lookback(FOR_EACH(SPLIT_THEN_TAKE_VAR, FUNC_INS)); ______\
-  Assert.equal(expected_lookback, lookback); ______\
+// FUNC_IN_PARAS: e.g. optInTimePeriod, optInMAType for TA_MA
+// FUNC_OUTS: output array, e.g. outMA for TA_MA
+// FUNC_HLC_INS: if not empty, will be HLC, and inData is inOpen; when only inClose is needed, pass NO_HLC_INS as FUNC_HLC_INS (e.g. for TA_MA)
+#define NO_HLC_INS
+#define    HLC_INS inHigh, inLow, inClose
+
+// e.g. TA_MA
+#define CHECK_NORMAL_LOOKBACK(TA_FUNC, FUNC_IN_PARAS, expected_lookback) \
+  int lookback = TA_FUNC##_Lookback(FOR_EACH(SPLIT_THEN_TAKE_VAR, FUNC_IN_PARAS)); ______\
+  enforce(expected_lookback == lookback); ______\
   if (lookback > inData.length) { ______\
     return false; ______\
-  } ______\
-  FOR_EACH(INIT_OUTPUT, FUNC_OUTS) ______\
-  auto r = talibd.talib.TA_FUNC(0, cast(int)(inData.length-1), inData.ptr, FOR_EACH(SPLIT_THEN_TAKE_VAR, FUNC_INS) &begin, &num OUT_PARAMS(FUNC_OUTS)); ______\
+  } ______ \
+
+
+// from lib/ta-lib-rt/ta-lib-rt/c/include/ta_defs.h
+#define LOOKBACK_CALL(x)        TA_##x##_Lookback
+
+// e.g. TA_CDLPIERCING
+#define CHECK_CDL_LOOKBACK(TA_FUNC) \
+  int lookback = LOOKBACK_CALL(TA_FUNC)(); ______ \
+  if (lookback > inData.length) { ______\
+    return false; ______\
+  } ______ \
+
+
+#define DECL_TA_FUNC(TA_FUNC, FUNC_HLC_INS, FUNC_IN_PARAS, func_outs_type, FUNC_OUTS, check_lookback) ______\
+bool TA_FUNC(double[] inData FOR_EACH(DECL_ARRAY_TYPE_double, FUNC_HLC_INS) FOR_EACH(DECL_ARRAY_TYPE_##func_outs_type, FUNC_OUTS) FOR_EACH(SPLIT_THEN_DECL_PARAM, FUNC_IN_PARAS)) { ______\
+  FOR_EACH(CHECK_OUTPUT_LENGTH, FUNC_OUTS) ______\
  ______\
-  Assert.equal(lookback, begin);  /* RSI's start 0-data need to compare with prev close, so this assert holds; in contrast for TA_MA */ ______\
-  Assert.equal(begin + num, cast(int)(inData.length)); ______\
+  int begin, num; ______ \
+  check_lookback \
+ ______\
+  FOR_EACH(INIT_OUTPUT, FUNC_OUTS) ______\
+  auto r = talibd.talib.TA_FUNC(0, cast(int)(inData.length-1), CAST_CONST_DOUBLE_PTR(inData.ptr), \
+		  FOR_EACH(ADD_PTR,  FUNC_HLC_INS)  \
+		  FOR_EACH(SPLIT_THEN_TAKE_VAR, FUNC_IN_PARAS) \
+		  &begin, &num OUT_PARAMS(FUNC_OUTS)); ______\
+ ______\
+  enforce(lookback == begin);  /* RSI's start 0-data need to compare with prev close, so this assert holds; in contrast for TA_MA */ ______\
+  enforce(begin + num == cast(int)(inData.length)); ______\
  ______\
   return TA_SUCCESS == r; ______\
 } ______ ______
@@ -145,8 +191,11 @@ immutable TA_MAType default_optInMAType = TA_MAType_SMA;
 // https://www.ta-lib.org/d_api/d_api.html#Output%20Size
 // The lookback function indicates how many inputs are consume before the first output can be calculated.
 // Example: A simple moving average (SMA) of period 10 will have a lookback of 9.
-DECL_TA_FUNC(TA_MA, MA_INS, MA_OUTS, (MA_optInTimePeriod-1))
+DECL_TA_FUNC(TA_MA, NO_HLC_INS, MA_INS, double, MA_OUTS, CHECK_NORMAL_LOOKBACK(TA_MA, MA_INS, MA_optInTimePeriod-1))
 
+#define EMPTY_INS
+#define CDL_OUTS outInteger
+// DECL_TA_FUNC(TA_CDLPIERCING, HLC_INS, EMPTY_INS, int, CDL_OUTS, CHECK_CDL_LOOKBACK(CDLPIERCING))
 
 
 /+ manual wrapper
@@ -159,7 +208,7 @@ bool TA_RSI(double[] inData, double[] outRSI, int period=default_RSI_optInTimePe
 #define RSI_INS  int RSI_optInTimePeriod
 #define RSI_OUTS outRSI
 immutable int default_RSI_optInTimePeriod = 14;
-DECL_TA_FUNC(TA_RSI, RSI_INS, RSI_OUTS, RSI_optInTimePeriod)
+DECL_TA_FUNC(TA_RSI, NO_HLC_INS, RSI_INS, double, RSI_OUTS, CHECK_NORMAL_LOOKBACK(TA_RSI, RSI_INS, RSI_optInTimePeriod))
 
 
 // https://school.stockcharts.com/doku.php?id=technical_indicators:moving_average_convergence_divergence_macd
@@ -170,4 +219,4 @@ DECL_TA_FUNC(TA_RSI, RSI_INS, RSI_OUTS, RSI_optInTimePeriod)
 immutable int default_optInFastPeriod = 12;
 immutable int default_optInSlowPeriod = 26;
 immutable int default_optInSignalPeriod = 9;
-DECL_TA_FUNC(TA_MACD, MACD_INS, MACD_OUTS, (optInSlowPeriod+optInSignalPeriod-2))
+DECL_TA_FUNC(TA_MACD, NO_HLC_INS, MACD_INS, double, MACD_OUTS, CHECK_NORMAL_LOOKBACK(TA_MACD, MACD_INS, optInSlowPeriod+optInSignalPeriod-2))
