@@ -13,6 +13,8 @@ http://prdownloads.sourceforge.net/ta-lib/ta-lib-0.4.0-src.tar.gz
 * build talib Linux Static Libraries
 * please check https://github.com/mingwugmail/talibd/blob/master/lib/Makefile
 ```
+$ git submodule update --init --recursive
+
 $ cd lib && make
 ```
 
@@ -28,7 +30,7 @@ https://github.com/atilaneves/dpp/issues/272
 
 # Demo:
 
-https://github.com/mingwugmail/talibd/blob/master/source/app.d
+https://github.com/mw66/talibd/blob/master/source/app.d
 
 just type `make` to run it:
 ```

@@ -17,6 +17,45 @@ public import talibd.oo;          // D wrapper
 
 alias logger = std.experimental.logger;
 
+
+unittest {
+
+  // NOTE: in talibd, SMA lookback and TA_RSI lookback has different relation to default_RSI_optInTimePeriod:
+  // The lookback function indicates how many inputs are consume before the first output can be calculated.
+  // Example: A simple moving average (SMA) of period 10 will have a lookback of 9.
+  int rsiLb = TA_RSI_Lookback(default_RSI_optInTimePeriod);
+  int maLb  = TA_MA_Lookback( default_RSI_optInTimePeriod, TA_MAType_SMA);
+  Assert.equal(default_RSI_optInTimePeriod, rsiLb);
+  Assert.equal(default_RSI_optInTimePeriod, maLb+1);
+
+  {
+  int lb = TA_RSI_Lookback(5);
+  Assert.equal(lb, 5);  // lookback is 5!
+  }
+
+  {
+  int lb = TA_MA_Lookback(5, TA_MAType_SMA);
+  Assert.equal(lb, 4);  // lookback is 4, so we must have ma.length = 5 to write the 1st value
+  }
+
+  // lookback must be the valid output array index
+  // output_sma[lookback] and output_rsi[lookback] contain the 1st output value
+  {
+  double[4] price;
+  double[4] ma;  // not long enough to write the 1st output
+  bool ok = TA_MA(price, ma, 5);
+  Assert.equal(ok, false);
+  }
+
+  {
+  double[5] price;
+  double[5] ma;  // now long enough to write the 1st output
+  bool ok = TA_MA(price, ma, 5);
+  Assert.equal(ok, true);
+  }
+}
+
+
 unittest {
 
 void main() {
@@ -102,7 +141,10 @@ void main() {
   assert(isClose(rsi14[ 13],       0, maxRelDiff));
   assert(isClose(rsi14[ 14], 80.4548, maxRelDiff));  // 1st non-zero value!
   assert(isClose(rsi14[$-1],   45.06, maxRelDiff));
+  }
 
+
+  {  // oo test
   writeln("test TA_MACD");
   auto macd = new MACD(prices);
   macd.calc();

@@ -3,8 +3,6 @@ module talibd.talib_func;
 import std.exception;
 import std.math;
 
-import fluent.asserts;
-
 import talibd.talib;
 
 
@@ -138,6 +136,7 @@ TA_LIB_API TA_RetCode TA_CDLPIERCING( int    startIdx,
    lookbackTotal = LOOKBACK_CALL(CDLPIERCING)();
 +/
 
+
 // FUNC_IN_PARAS: e.g. optInTimePeriod, optInMAType for TA_MA
 // FUNC_OUTS: output array, e.g. outMA for TA_MA
 // FUNC_HLC_INS: if not empty, will be HLC, and inData is inOpen; when only inClose is needed, pass NO_HLC_INS as FUNC_HLC_INS (e.g. for TA_MA)
@@ -148,7 +147,7 @@ TA_LIB_API TA_RetCode TA_CDLPIERCING( int    startIdx,
 #define CHECK_NORMAL_LOOKBACK(TA_FUNC, FUNC_IN_PARAS, expected_lookback) \
   int lookback = TA_FUNC##_Lookback(FOR_EACH(SPLIT_THEN_TAKE_VAR, FUNC_IN_PARAS)); ______\
   enforce(expected_lookback == lookback); ______\
-  if (lookback > inData.length) { ______\
+  if (lookback >= inData.length) {  /* the first output will be writen to outReal[lookback] */  ______\
     return false; ______\
   } ______ \
 
@@ -163,7 +162,7 @@ TA_LIB_API TA_RetCode TA_CDLPIERCING( int    startIdx,
  */
 #define CHECK_CDL_LOOKBACK(TA_FUNC, FUNC_IN_PARAS) \
   int lookback = LOOKBACK_CALL(TA_FUNC)(FOR_EACH(SPLIT_THEN_TAKE_VAR, FUNC_IN_PARAS)); ______ \
-  if (lookback > inData.length) { ______\
+  if (lookback >= inData.length) {  /* the first output will be writen to outReal[lookback] */  ______\
     return false; ______\
   } ______ \
 
