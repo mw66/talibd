@@ -16,7 +16,7 @@ talib:
 
 NEW_LINE=______
 $(SRC)/talib_func.d: $(SRC)/talib_func.h
-	cpp -P $< | sed 's/$(NEW_LINE)/\n/g' > $@
+	cpp -std=c2x -P $< | sed 's/$(NEW_LINE)/\n/g' > $@
 
 clean:
 	$(DUB) clean
