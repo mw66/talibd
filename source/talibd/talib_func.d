@@ -82,6 +82,29 @@ bool TA_MA(double[] inData , double[] outMA , int MA_optInTimePeriod=default_MA_
 } 
  
 
+
+bool TA_CDLPIERCING(double[] inData , double[] inHigh, double[] inLow, double[] inClose , int[] outInteger ) { 
+ enforce(inData.length == outInteger.length);
+ 
+ 
+ int begin, num; 
+ int lookback = TA_CDLPIERCING_Lookback(); 
+ if (lookback > inData.length) { 
+ return false; 
+ } 
+ 
+ outInteger[0..lookback] = 0;
+ 
+ auto r = talibd.talib.TA_CDLPIERCING(0, cast(int)(inData.length-1), inData.ptr, inHigh.ptr,inLow.ptr,inClose.ptr, &begin, &num ,
+ &(outInteger[lookback])); 
+ 
+ enforce(lookback == begin); 
+ enforce(begin + num == cast(int)(inData.length)); 
+ 
+ return TA_SUCCESS == r; 
+} 
+ 
+
 /+ manual wrapper
 bool TA_RSI(double[] inData, double[] outRSI, int period=default_RSI_optInTimePeriod) {
   auto r = talibd.talib.TA_RSI(0, cast(int)(inData.length-1), inData.ptr, period, &begin, &num, &(outRSI[lookback]));
