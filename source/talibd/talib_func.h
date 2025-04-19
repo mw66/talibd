@@ -7,6 +7,7 @@ import fluent.asserts;
 
 import talibd.talib;
 
+
 // NEW_LINE will be processed in the Makefile
 #define NEW_LINE ______
 
@@ -156,8 +157,12 @@ TA_LIB_API TA_RetCode TA_CDLPIERCING( int    startIdx,
 #define LOOKBACK_CALL(x)        TA_##x##_Lookback
 
 // e.g. TA_CDLPIERCING
-#define CHECK_CDL_LOOKBACK(TA_FUNC) \
-  int lookback = LOOKBACK_CALL(TA_FUNC)(); ______ \
+/* expand to:
+ int lookback = TA_CDL3WHITESOLDIERS_Lookback(); 
+ int lookback = TA_CDLABANDONEDBABY_Lookback(optInPenetration,); 
+ */
+#define CHECK_CDL_LOOKBACK(TA_FUNC, FUNC_IN_PARAS) \
+  int lookback = LOOKBACK_CALL(TA_FUNC)(FOR_EACH(SPLIT_THEN_TAKE_VAR, FUNC_IN_PARAS)); ______ \
   if (lookback > inData.length) { ______\
     return false; ______\
   } ______ \
@@ -195,8 +200,30 @@ DECL_TA_FUNC(TA_MA, NO_HLC_INS, MA_INS, double, MA_OUTS, CHECK_NORMAL_LOOKBACK(T
 
 #define EMPTY_INS
 #define CDL_OUTS outInteger
-DECL_TA_FUNC(TA_CDLPIERCING, HLC_INS, EMPTY_INS, int, CDL_OUTS, CHECK_CDL_LOOKBACK(CDLPIERCING))
+/* manually gen one
+DECL_TA_FUNC(TA_CDLPIERCING, HLC_INS, EMPTY_INS, int, CDL_OUTS, CHECK_CDL_LOOKBACK(CDLPIERCING, EMPTY_INS))
+*/
 
+
+#define DECL_TA_CDL_FUNC(fname) \
+        DECL_TA_FUNC(TA_##fname, HLC_INS, EMPTY_INS, int, CDL_OUTS, CHECK_CDL_LOOKBACK(fname, EMPTY_INS))
+
+
+#if 0
+/+ source/gen_talib_cdl_funcs.py NEED_OPTIN_FUNCS
+# lib/ta-lib-code/ta-lib/c/src/ta_func/ta_CDLMORNINGSTAR.c
+# /* Generated */        optInPenetration = 3.000000e-1;
+# need optInPenetration
++/
+#endif
+
+#define ONE_INS double        optInPenetration
+immutable double default_optInPenetration = 0.3;
+#define DECL_TA_CDL_FUNC_1(fname) \
+        DECL_TA_FUNC(TA_##fname, HLC_INS, ONE_INS, int, CDL_OUTS, CHECK_CDL_LOOKBACK(fname, ONE_INS))
+
+
+#include "cdl_funcs.h"
 
 /+ manual wrapper
 bool TA_RSI(double[] inData, double[] outRSI, int period=default_RSI_optInTimePeriod) {
